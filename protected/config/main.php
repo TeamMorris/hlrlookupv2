@@ -6,7 +6,7 @@
 // CWebApplication properties can be configured here.
 return array(
     'basePath' => dirname(__FILE__) . DIRECTORY_SEPARATOR . '..',
-    'name' => 'My Web Application',
+    'name' => 'HLR V2',
     'theme' => 'abound',
     // preloading 'log' component
     'preload' => array(
@@ -86,5 +86,6 @@ return array(
     'params' => array(
         // this is used in contact page
         'adminEmail' => 'webmaster@example.com',
+        'desc' => 'A free HLR lookup',
     ),
 );
