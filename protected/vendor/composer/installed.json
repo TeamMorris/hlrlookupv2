@@ -1,0 +1,48 @@
+[
+    {
+        "name": "amstaff/simplehtmldom",
+        "version": "dev-master",
+        "version_normalized": "9999999-dev",
+        "source": {
+            "type": "git",
+            "url": "https://github.com/AmsTaFFix/SimpleHtmlDom.git",
+            "reference": "f7d161db67568ae793d54707135ced4fc3b31579"
+        },
+        "dist": {
+            "type": "zip",
+            "url": "https://api.github.com/repos/AmsTaFFix/SimpleHtmlDom/zipball/f7d161db67568ae793d54707135ced4fc3b31579",
+            "reference": "f7d161db67568ae793d54707135ced4fc3b31579",
+            "shasum": ""
+        },
+        "require": {
+            "php": ">=5.2.0"
+        },
+        "time": "2014-01-10 10:13:11",
+        "type": "library",
+        "installation-source": "source",
+        "autoload": {
+            "psr-0": {
+                "SimpleHtmlDom": "lib/"
+            },
+            "files": [
+                "lib/SimpleHtmlDom/SimpleHtmlDom.php"
+            ]
+        },
+        "notification-url": "https://packagist.org/downloads/",
+        "authors": [
+            {
+                "name": "S.C. Chen",
+                "email": "me578022@gmail.com",
+                "homepage": "http://simplehtmldom.sourceforge.net/",
+                "role": "Lead Developer"
+            }
+        ],
+        "description": "вызов библиотеки \"simple_html_dom\" в стиле PSR-#",
+        "homepage": "http://simplehtmldom.sourceforge.net/",
+        "keywords": [
+            "Simple",
+            "dom",
+            "html"
+        ]
+    }
+]

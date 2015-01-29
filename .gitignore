@@ -1,0 +1,5 @@
+protected/runtime/*
+!assets/.gitignore
+assets/*
+!protected/runtime/.gitignore
+*.bat

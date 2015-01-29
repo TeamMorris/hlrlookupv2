@@ -1,0 +1,16 @@
+{
+    "name": "EMAXX-A55-FM2/protected",
+    "authors": [
+        {
+            "name": "kebyang",
+            "email": "kebyang1511@yahoo.com"
+        }
+    ],
+    "require": {
+        "amstaff/simplehtmldom": "dev-master"
+    },
+    "require-dev": {
+        "amstaff/simplehtmldom": "dev-master"
+    }
+
+}

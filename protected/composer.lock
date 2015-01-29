@@ -1,0 +1,64 @@
+{
+    "_readme": [
+        "This file locks the dependencies of your project to a known state",
+        "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
+        "This file is @generated automatically"
+    ],
+    "hash": "2360c3d5cf2e9dd11a7c5b993e5543d5",
+    "packages": [
+        {
+            "name": "amstaff/simplehtmldom",
+            "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/AmsTaFFix/SimpleHtmlDom.git",
+                "reference": "f7d161db67568ae793d54707135ced4fc3b31579"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/AmsTaFFix/SimpleHtmlDom/zipball/f7d161db67568ae793d54707135ced4fc3b31579",
+                "reference": "f7d161db67568ae793d54707135ced4fc3b31579",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.2.0"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-0": {
+                    "SimpleHtmlDom": "lib/"
+                },
+                "files": [
+                    "lib/SimpleHtmlDom/SimpleHtmlDom.php"
+                ]
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "authors": [
+                {
+                    "name": "S.C. Chen",
+                    "email": "me578022@gmail.com",
+                    "homepage": "http://simplehtmldom.sourceforge.net/",
+                    "role": "Lead Developer"
+                }
+            ],
+            "description": "вызов библиотеки \"simple_html_dom\" в стиле PSR-#",
+            "homepage": "http://simplehtmldom.sourceforge.net/",
+            "keywords": [
+                "Simple",
+                "dom",
+                "html"
+            ],
+            "time": "2014-01-10 10:13:11"
+        }
+    ],
+    "packages-dev": [],
+    "aliases": [],
+    "minimum-stability": "stable",
+    "stability-flags": {
+        "amstaff/simplehtmldom": 20
+    },
+    "prefer-stable": false,
+    "prefer-lowest": false,
+    "platform": [],
+    "platform-dev": []
+}
