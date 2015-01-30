@@ -11,10 +11,10 @@ return array(
     'components' => array(
         // uncomment the following to use a MySQL database
         'db' => array(
-            'connectionString' => 'mysql:host=localhost;dbname=hlrv2',
+            'connectionString' => 'mysql:host=localhost;dbname=freedebt_hlr',
             'emulatePrepare' => true,
-            'username' => 'root',
-            'password' => 'root',
+            'username' => 'freedebt_hlr',
+            'password' => 'hitman052529',
             'charset' => 'utf8',
         ),
         'log' => array(
