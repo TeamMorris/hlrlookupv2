@@ -1,7 +1,5 @@
 <?php
 
-
-
 /**
  * Description of HLRLookupService
  *
@@ -11,21 +9,37 @@ class HLRLookupService {
 
     private $rawResult = '';
     private $mobileNumber = '';
-    private $tempFileName = '';
-    
-    public function __destruct() {
-        unlink($this->tempFileName);
-    }
 
-    public function requestData($mobileNumber) {
-        $commandResult = '';
-        $temporaryFile = tempnam(__DIR__, "tempResult");
-        $this->tempFileName = $temporaryFile;
-        
-        $command = sprintf('curl "https://www.hlrcheck.com/freecheck" -H "Origin: https://www.hlrcheck.com" -H "Accept-Encoding: gzip, deflate" -H "Accept-Language: en-US,en;q=0.8,fil;q=0.6,th;q=0.4,it;q=0.2,es;q=0.2" -H "User-Agent: Mozilla/5.0 (Windows NT 6.2; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/39.0.2171.65 Safari/537.36" -H "Content-Type: application/x-www-form-urlencoded" -H "Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8" -H "Cache-Control: max-age=0" -H "Referer: https://www.hlrcheck.com/freecheck" -H "Connection: keep-alive" -H "DNT: 1" --data "tocheck=%s" --compressed > %s ', $mobileNumber,$temporaryFile);
-        exec($command);
-        $commandResult = file_get_contents($temporaryFile);
-        $this->setRawResult($commandResult);
+    public function requestData() {
+        $url = 'https://www.hlrcheck.com/freecheck';
+        $getParams = array(
+            'tocheck' => $this->mobileNumber
+        );
+        $headers = array(
+            "Origin: https://www.hlrcheck.com",
+            // "Accept-Encoding: gzip, deflate" ,
+            "Accept-Language: en-US,en;q=0.8,fil;q=0.6,th;q=0.4,it;q=0.2,es;q=0.2",
+            "User-Agent: Mozilla/5.0 (Windows NT 6.2; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/39.0.2171.65 Safari/537.36",
+            "Content-Type: application/x-www-form-urlencoded",
+            "Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8",
+            "Cache-Control: max-age=0",
+            "Referer: https://www.hlrcheck.com/freecheck",
+            "Connection: keep-alive",
+            "DNT: 1",
+        );
+        $curl = curl_init($url);
+        curl_setopt($curl, CURLOPT_POST, 1);
+        curl_setopt($curl, CURLOPT_POSTFIELDS, $getParams);
+        curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
+        curl_setopt($curl, CURLOPT_SSL_VERIFYHOST, false);
+        curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, false);
+        curl_setopt($curl, CURLOPT_HTTPHEADER, $headers);
+        $responseText = curl_exec($curl);
+        print_r($responseText);
+        die();
+        $resultStatus = curl_getinfo($curl);
+        curl_close($curl);
+        $this->setRawResult($responseText);
     }
 
     public function setRawResult($rawResult) {
@@ -35,14 +49,17 @@ class HLRLookupService {
     public function getRawResult() {
         return $this->rawResult;
     }
+
     public function setMobileNumber($mobileNumber) {
         $this->mobileNumber = $mobileNumber;
     }
+
     public function getMobileNumber() {
         return $this->mobileNumber;
     }
+
     public function getPhoneInformation() {
-        $this->requestData($this->getMobileNumber());
+        $this->requestData();
         $commandResult = $this->getRawResult();
         $htmlResult = \SimpleHtmlDom\str_get_html($commandResult);
         $resultMobileNumber = $htmlResult->find('//*[@id="slideme"]/tbody/tr[1]/td[2]', 0);
@@ -66,4 +83,3 @@ class HLRLookupService {
     }
 
 }
-

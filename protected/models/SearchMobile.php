@@ -44,12 +44,32 @@ class SearchMobile extends CFormModel {
         $resultArr = $lookupService->getPhoneInformation();
 
         // prepare command 
-        $command = sprintf('curl "http://www.qas.co.uk/proweb/MobileNumberValidationServlet?serviceId=uk&mobileNumber=%s&format=JSON" -H "DNT: 1" -H "Accept-Encoding: gzip, deflate, sdch" -H "Accept-Language: en-US,en;q=0.8,fil;q=0.6,th;q=0.4,it;q=0.2,es;q=0.2" -H "User-Agent: Mozilla/5.0 (Windows NT 6.2; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/39.0.2171.65 Safari/537.36" -H "Accept: application/json, text/javascript, */*; q=0.01" -H "X-Requested-With: XMLHttpRequest" -H "Connection: keep-alive" --compressed', $this->mobileNumber);
-        exec("$command > $tempFile"); //execute curl command  , native command via exec
-        $jsonContents = file_get_contents($tempFile);
-        $tempResultArr = json_decode($jsonContents, true);
+        $url = 'http://www.qas.co.uk/proweb/MobileNumberValidationServlet?';
+        $getParams = array(
+            'serviceId' => 'uk',
+            'mobileNumber' => $this->mobileNumber,
+            'format' => 'JSON',
+        );
+        $headers = array(
+            "DNT: 1",
+            "Accept-Language: en-US,en;q=0.8,fil;q=0.6,th;q=0.4,it;q=0.2,es;q=0.2",
+            "User-Agent: Mozilla/5.0 (Windows NT 6.2; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/39.0.2171.65 Safari/537.36",
+            "Accept: application/json, text/javascript, */*; q=0.01",
+            "X-Requested-With: XMLHttpRequest",
+            "Connection: keep-alive",
+        );
+        $url = $url . http_build_query($getParams);
+        $curl = curl_init($url);
+        // curl_setopt($curl, CURLOPT_POST, 1);
+        curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
+        curl_setopt($curl, CURLOPT_SSL_VERIFYHOST, false);
+        curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, false);
+        curl_setopt($curl, CURLOPT_HTTPHEADER, $headers);
+        $responseText = curl_exec($curl);
+        $resultStatus = curl_getinfo($curl);
+        curl_close($curl);
+        $tempResultArr = json_decode($responseText, true);
         $resultArr['isActive'] = ($tempResultArr['response']['mobileNumber']['description'] !== "Unknown") ? true : false;
-        unlink($tempFile);
         return $resultArr;
     }
 
