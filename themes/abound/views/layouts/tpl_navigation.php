@@ -22,7 +22,8 @@
 					'itemCssClass'=>'item-test',
                     'encodeLabel'=>false,
                     'items'=>array(
-                        array('label'=>'Bulk Lookup', 'url'=>array('/bulk')),
+                        array('label'=>'Queues', 'url'=>array('queue/index')),
+                        array('label'=>'Bulk Lookup', 'url'=>array('bulk/default')),
                         array('label'=>'Login', 'url'=>array('/site/login'), 'visible'=>Yii::app()->user->isGuest),
                         array('label'=>'Logout ('.Yii::app()->user->name.')', 'url'=>array('/site/logout'), 'visible'=>!Yii::app()->user->isGuest),
                     ),
