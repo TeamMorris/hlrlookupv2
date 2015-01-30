@@ -39,11 +39,8 @@ class SearchMobile extends CFormModel {
         $tempDataPath = Yii::getPathOfAlias("application.data");
         $tempFile = tempnam($tempDataPath, "curl_res");
 
-        $lookupService = new HLRLookupService();
-        $lookupService->setMobileNumber($this->mobileNumber);
-        $resultArr = $lookupService->getPhoneInformation();
-
         // prepare command 
+        
         $url = 'http://www.qas.co.uk/proweb/MobileNumberValidationServlet?';
         $getParams = array(
             'serviceId' => 'uk',
@@ -69,7 +66,12 @@ class SearchMobile extends CFormModel {
         $resultStatus = curl_getinfo($curl);
         curl_close($curl);
         $tempResultArr = json_decode($responseText, true);
-        $resultArr['isActive'] = ($tempResultArr['response']['mobileNumber']['description'] !== "Unknown") ? true : false;
+        $resultArr['mobileNumber'] = $this->mobileNumber;
+        $resultArr['location'] = @$tempResultArr['response']['mobileNumber']['countryName'].'/'.@$tempResultArr['response']['mobileNumber']['operatorCountryName'];
+        $resultArr['region'] = strtoupper(@$tempResultArr['response']['mobileNumber']['operatorCountryIso']);
+        $resultArr['originalNetwork'] = @$tempResultArr['response']['mobileNumber']['operatorName'];
+        $resultArr['timeZone'] = @$tempResultArr['response']['timeZone'];
+        $resultArr['isActive'] = (@$tempResultArr['response']['mobileNumber']['description'] !== "Unknown") ? true : false;
         return $resultArr;
     }
 

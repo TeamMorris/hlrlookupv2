@@ -22,6 +22,7 @@
 					'itemCssClass'=>'item-test',
                     'encodeLabel'=>false,
                     'items'=>array(
+                        array('label'=>'home', 'url'=>array('site/index')),
                         array('label'=>'Queues', 'url'=>array('queue/index')),
                         array('label'=>'Bulk Lookup', 'url'=>array('bulk/default')),
                         array('label'=>'Login', 'url'=>array('/site/login'), 'visible'=>Yii::app()->user->isGuest),
