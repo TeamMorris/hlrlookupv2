@@ -19,7 +19,9 @@ $this->breadcrumbs=array(
 
 
 if ($unprocessed == '0' && $processed == '0') {
-	$unprocessed = "loading...";
+	$unprocessedLabel = "loading...";
+}else{
+	$unprocessedLabel = 0;
 }
 
 $this->menu=array(
@@ -27,14 +29,14 @@ $this->menu=array(
 	array('label'=>'Active Mobile <span class="label pull-right">'.$activeMobileNumbers.'</span>', 'url'=>array('#')),
 	array('label'=>'Inactive Mobile <span class="label pull-right">'.$inactiveMobileNumbers.'</span>', 'url'=>array('#')),
 	array('label'=>'Processed <span class="label  pull-right">'.$processed.'</span>', 'url'=>array('#')),
-	array('label'=>'Unprocessed <span class="label  pull-right">'.$unprocessed.'</span>', 'url'=>array('#')),
+	array('label'=>'Unprocessed <span class="label  pull-right">'.$unprocessedLabel.'</span>', 'url'=>array('#')),
 );
 
 
-if ($processed != '0' && $unprocessed == '0') {
+if ($unprocessedLabel != 'loading...') {
 	array_push(
 			$this->menu, 
-			array('label'=>'<div class="btn btn-primary">Download Active Mobile Numbers</div>', 'url'=>array('download','queue_id'=>$queue_model->queue_id))
+			array('label'=>'<div class="">Download Active Mobile Numbers</div>', 'url'=>array('download','queue_id'=>$queue_model->queue_id))
 	);
 }
 

@@ -3,3 +3,4 @@ protected/runtime/*
 assets/*
 !protected/runtime/.gitignore
 *.bat
+/protected/data/

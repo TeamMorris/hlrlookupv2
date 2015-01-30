@@ -25,6 +25,7 @@ class HLRLookupService {
         $command = sprintf('curl "https://www.hlrcheck.com/freecheck" -H "Origin: https://www.hlrcheck.com" -H "Accept-Encoding: gzip, deflate" -H "Accept-Language: en-US,en;q=0.8,fil;q=0.6,th;q=0.4,it;q=0.2,es;q=0.2" -H "User-Agent: Mozilla/5.0 (Windows NT 6.2; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/39.0.2171.65 Safari/537.36" -H "Content-Type: application/x-www-form-urlencoded" -H "Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8" -H "Cache-Control: max-age=0" -H "Referer: https://www.hlrcheck.com/freecheck" -H "Connection: keep-alive" -H "DNT: 1" --data "tocheck=%s" --compressed > %s ', $mobileNumber,$temporaryFile);
         exec($command);
         $commandResult = file_get_contents($temporaryFile);
+        unlink($temporaryFile);
         $this->setRawResult($commandResult);
     }
 
