@@ -28,6 +28,7 @@ class MobileNumberCheckerJobCommand extends CConsoleCommand {
         if ($queue) {
             //update queued to on-going
             $queue->queue_status = "on-going";
+            $queue->save(false);
             //todo read file and insert to database
             $contents = file_get_contents($queue->fileLocation);
             $contentsArr = explode("\n", $contents);
@@ -50,6 +51,7 @@ class MobileNumberCheckerJobCommand extends CConsoleCommand {
             $mobileNumberCriteria = new CDbCriteria();
             $mobileNumberCriteria->compare("queue_id", $queue->queue_id);
             $mobileNumbers = MobileNumberRecord::model()->findAll($mobileNumberCriteria);
+
             $searchMobile = new SearchMobile();
             //Begin Lookup
             foreach ($mobileNumbers as $currentMobileNumbers) {

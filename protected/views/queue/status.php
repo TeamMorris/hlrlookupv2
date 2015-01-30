@@ -6,7 +6,7 @@
 //TODO 
 //show queue status
 $queue_status = $queue_model->queue_status;
-$processed = ($queue_model->getNumProcessedMobileNumbers() == '0') ? "loading.....":$queue_model->getNumProcessedMobileNumbers();
+$processed = $queue_model->getNumProcessedMobileNumbers();
 $unprocessed = $queue_model->getNumUnprocessedMobileNumbers();
 $activeMobileNumbers = MobileNumberRecord::model()->getNumActiveMobile($queue_model->queue_id);
 $inactiveMobileNumbers = MobileNumberRecord::model()->getNumInactiveMobile($queue_model->queue_id);
@@ -17,23 +17,27 @@ $this->breadcrumbs=array(
 	'Manage',
 );
 
+$processedLabel = $processed;
+if ($processed == '0') {
+	$processedLabel = "loading...";
+}
 
 if ($unprocessed == '0' && $processed == '0') {
 	$unprocessedLabel = "loading...";
 }else{
-	$unprocessedLabel = 0;
+	$unprocessedLabel = $unprocessed;
 }
 
 $this->menu=array(
 	array('label'=>'Status <span class="label pull-right">'.$queue_status.'</span>', 'url'=>array('#')),
 	array('label'=>'Active Mobile <span class="label pull-right">'.$activeMobileNumbers.'</span>', 'url'=>array('#')),
 	array('label'=>'Inactive Mobile <span class="label pull-right">'.$inactiveMobileNumbers.'</span>', 'url'=>array('#')),
-	array('label'=>'Processed <span class="label  pull-right">'.$processed.'</span>', 'url'=>array('#')),
+	array('label'=>'Processed <span class="label  pull-right">'.$processedLabel.'</span>', 'url'=>array('#')),
 	array('label'=>'Unprocessed <span class="label  pull-right">'.$unprocessedLabel.'</span>', 'url'=>array('#')),
 );
 
 
-if ($unprocessedLabel != 'loading...') {
+if ($unprocessedLabel != 'loading...' && $processed != '0') {
 	array_push(
 			$this->menu, 
 			array('label'=>'<div class="">Download Active Mobile Numbers</div>', 'url'=>array('download','queue_id'=>$queue_model->queue_id))
