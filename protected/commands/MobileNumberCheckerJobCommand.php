@@ -48,16 +48,19 @@ class MobileNumberCheckerJobCommand extends CConsoleCommand {
                 }
             }
             echo "Starting lookup job . \n";
-            $mobileNumberCriteria = new CDbCriteria();
-            $mobileNumberCriteria->compare("queue_id", $queue->queue_id);
-
-            $mobileNumbers = MobileNumberRecord::model()->find($mobileNumberCriteria);
+            /*retrieve all mobile numbners under the queue*/
+            $mobileNumbersCommand = Yii::app()->db->createCommand("select mobileNumber from mobilenumberrecord where queue_id = :queue_id");
+            $mobileNumbersCommand->params = array("queue_id" => $queue->queue_id );
+            $mobileNumbersArrResult = $mobileNumbersCommand->queryAll();
+            /*mobile info searcher */
             $searchMobile = new SearchMobile();
-            //Begin Lookup
-            while($mobileNumbers) {
-                /*
-                 * @var $currentMobileNumbers MobileNumberRecord
-                 */
+            //begin lookup
+            foreach ($mobileNumbersArrResult as $currentValue) {
+                $mobileNumberCriteria = new CDbCriteria();
+                $mobileNumberCriteria->compare("queue_id", $queue->queue_id);
+                $mobileNumberCriteria->compare("mobileNumber", $currentValue['mobileNumber']);
+                $mobileNumbers = MobileNumberRecord::model()->find($mobileNumberCriteria);
+                //set mobile number to search
                 $searchMobile->mobileNumber = $mobileNumbers->mobileNumber;
                 $result = $searchMobile->getMobileNumberInformation();
                 $mobileNumbers->location = $result['location'];
@@ -66,11 +69,10 @@ class MobileNumberCheckerJobCommand extends CConsoleCommand {
                 $mobileNumbers->timezone = $result['timeZone'];
                 $mobileNumbers->status = $result['isActive'] ? "Active" : "Inactive";
                 if ($mobileNumbers->save()) {
-                    echo "Search lookup for : $currentMobileNumbers->mobileNumber : Succeed. \n";
+                    echo "Search lookup for : $mobileNumbers->mobileNumber : Succeed. \n";
                 } else {
-                    echo "Search lookup for : $currentMobileNumbers->mobileNumber : Failed. \n";
+                    echo "Search lookup for : $mobileNumbers->mobileNumber : Failed. \n";
                 }
-                $mobileNumbers = MobileNumberRecord::model()->find($mobileNumberCriteria);
             }
             $queue->queue_status = "done";
             $queue->date_finished = date("Y-m-d H:i:s");
