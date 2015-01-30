@@ -7,7 +7,7 @@
 //show queue status
 $queue_status = $queue_model->queue_status;
 $processed = ($queue_model->getNumProcessedMobileNumbers() == '0') ? "loading.....":$queue_model->getNumProcessedMobileNumbers();
-$unprocessed = ($queue_model->getNumUnprocessedMobileNumbers() == '0') ? "loading.....":$queue_model->getNumUnprocessedMobileNumbers();
+$unprocessed = $queue_model->getNumUnprocessedMobileNumbers();
 $activeMobileNumbers = MobileNumberRecord::model()->getNumActiveMobile($queue_model->queue_id);
 $inactiveMobileNumbers = MobileNumberRecord::model()->getNumInactiveMobile($queue_model->queue_id);
 
@@ -18,6 +18,10 @@ $this->breadcrumbs=array(
 );
 
 
+if ($unprocessed == '0' && $processed == '0') {
+	$unprocessed = "loading...";
+}
+
 $this->menu=array(
 	array('label'=>'Status <span class="label pull-right">'.$queue_status.'</span>', 'url'=>array('#')),
 	array('label'=>'Active Mobile <span class="label pull-right">'.$activeMobileNumbers.'</span>', 'url'=>array('#')),
@@ -25,6 +29,17 @@ $this->menu=array(
 	array('label'=>'Processed <span class="label  pull-right">'.$processed.'</span>', 'url'=>array('#')),
 	array('label'=>'Unprocessed <span class="label  pull-right">'.$unprocessed.'</span>', 'url'=>array('#')),
 );
+
+
+if ($processed != '0' && $unprocessed == '0') {
+	array_push(
+			$this->menu, 
+			array('label'=>'<div class="btn btn-primary">Download Active Mobile Numbers</div>', 'url'=>array('download','queue_id'=>$queue_model->queue_id))
+	);
+}
+
+
+
 ?>
 
 

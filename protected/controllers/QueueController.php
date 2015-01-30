@@ -26,7 +26,7 @@ class QueueController extends Controller {
     public function accessRules() {
         return array(
             array('allow', // allow all users to perform 'index' and 'view' actions
-                'actions' => array('index', 'view', 'status'),
+                'actions' => array('index', 'view', 'status','download'),
                 'users' => array('*'),
             ),
             array('allow', // allow authenticated user to perform 'create' and 'update' actions
@@ -129,6 +129,34 @@ class QueueController extends Controller {
         // if AJAX request (triggered by deletion via admin grid view), we should not redirect the browser
         if (!isset($_GET['ajax']))
             $this->redirect(isset($_POST['returnUrl']) ? $_POST['returnUrl'] : array('admin'));
+    }
+
+    public function actionDownload()
+    {
+        if (isset($_GET['queue_id'])) {
+            $getNameCommand = Yii::app()->db->createCommand("select * from queue where queue_id = :queue_id");
+            $getNameCommand->params = array(
+              "queue_id"=>intval($_GET['queue_id']),
+            );            
+            $nameRes = $getNameCommand->queryAll();
+            $fileName = $nameRes[0]['queue_name'];
+            header("Content-type: text/csv");
+            header("Content-Disposition: attachment; filename=Active-mobile-numbers-$fileName.csv");
+            header("Pragma: no-cache");
+            header("Expires: 0");
+            $command = Yii::app()->db->createCommand("select mobileNumber,location,region,originalNetwork,timezone,status,date_created as 'date processed' from mobilenumberrecord where queue_id = :queue_id and status = :status");
+            $command->params = array(
+              "queue_id"=>intval($_GET['queue_id']),
+              "status"=>"Active",
+            );
+            $downloadResult = $command->queryAll();
+            $headersCsv = array_keys($downloadResult[0]);
+            echo implode(",", $headersCsv)."\n";
+            foreach ($downloadResult as $currentRow) {
+                $currentRow = array_map('trim', $currentRow);
+                echo implode(",", $currentRow)."\n";
+            }
+        }
     }
 
     /**
