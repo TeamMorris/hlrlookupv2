@@ -21,7 +21,11 @@ class SiteController extends Controller {
     }
 
     public function actionTest() {
-        $this->render('test');
+        $model = new SearchMobile();
+        $model->mobileNumber = "447861930328";
+        $result = $model->getMobileNumberInformation();
+        
+//        $this->render('test');
     }
 
     /**
