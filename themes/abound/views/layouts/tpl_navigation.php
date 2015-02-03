@@ -8,7 +8,7 @@
           </a>
      
           <!-- Be sure to leave the brand out there if you want it shown -->
-            <a class="brand" href="#">
+            <a class="brand" href="<?php echo $this->createurl("/site/index") ?>">
                 <?php echo Yii::app()->name ?>
                 <small>
                     <?php echo Yii::app()->params['desc'] ?>
