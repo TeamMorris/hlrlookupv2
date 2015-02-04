@@ -8,7 +8,7 @@
 
 /*configuration */
 $GLOBALS['numOfTries'] = 0; 
-
+$GLOBALS['changeIpCommand'] = '"C:\Program Files (x86)\HMA! Pro VPN\bin\HMA! Pro VPN.exe" -changeip';
 /**
  * Description of MobileNumberCheckerJob
  *
@@ -70,36 +70,15 @@ class MobileNumberCheckerJobCommand extends CConsoleCommand {
                 //set mobile number to search
                 $searchMobile->mobileNumber = $mobileNumbers->mobileNumber;
 
-
-                /*Check connection after changing ip address*/
-                //check the data from  the HLR server if empty
-                // if not empty continue , else re do it
+                /*lets do a search*/
+                $result = $searchMobile->getMobileNumberInformation();// fetch current status
                 
-                while (true) {
-                    $result = "";
-                    if ($this->checkConnection()) {
-                        $result = @$searchMobile->getMobileNumberInformation();
-                    }
-                    
-                    if (empty($result)) {
-                        echo "Re check connection.... Number of tries : ".$GLOBALS['numOfTries']."\n";
-                    }else{
-                        $command = 'curl "http://api.phone-validator.net/api/v2/verify" -H "Origin: http://www.phone-validator.net" -H "Accept-Encoding: gzip, deflate" -H "Accept-Language: en-US,en;q=0.8,fil;q=0.6,th;q=0.4,it;q=0.2,es;q=0.2" -H "User-Agent: Mozilla/5.0 (Windows NT 6.2; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/39.0.2171.65 Safari/537.36" -H "Content-Type: application/x-www-form-urlencoded; charset=UTF-8" -H "Accept: application/json, text/javascript, */*; q=0.01" -H "Referer: http://www.phone-validator.net/" -H "Connection: keep-alive" -H "DNT: 1" --data "PhoneNumber='.$mobileNumbers->mobileNumber.'&CountryCode=gb" --compressed';
-                        $commandResult = exec($command);
-                        $tempResult = "";
-                        if (!empty($commandResult)) {
-                            $tempResult = json_decode($commandResult);
-                        }else{
-                            continue;
-                        }
-                        if (isset($tempResult->status) && $tempResult->status === "FAIL") {
-                            continue;
-                        }else{
-                            break;
-                        }
-                    }
+                //check current credit , 
+                while (!$this->checkCredit($searchMobile->getLastQueryContent())) {
+                    exec($GLOBALS['changeIpCommand']);
+                    sleep(10);
+                    $result = $searchMobile->getMobileNumberInformation();//fetch aagain
                 }
-
                 
                 $mobileNumbers->location = $result['location'];
                 $mobileNumbers->region = $result['region'];
@@ -127,16 +106,6 @@ class MobileNumberCheckerJobCommand extends CConsoleCommand {
     */
     private function checkConnection()
     {
-        $isValid = false;
-        $url = 'http://myexternalip.com/json';
-        $curl = curl_init($url);
-        curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
-        curl_setopt($curl, CURLOPT_SSL_VERIFYHOST, false);
-        curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, false);
-        $responseText = curl_exec($curl); 
-        $resultStatus = curl_getinfo($curl);
-        curl_close($curl);
-
         if (!empty($responseText)) {
             $responseTextArr = json_decode($responseText);
             if (!in_array($responseTextArr->ip, array("203.177.167.50","122.53.31.206"))) {
@@ -154,7 +123,23 @@ class MobileNumberCheckerJobCommand extends CConsoleCommand {
             sleep(1);
         }
         return $isValid;
-    }    
+    }
+    /**
+     * Checks whether we still have credits or not
+     * @param  [type] $mobileNumber [description]
+     * @return [type]               [description]
+     */
+    private function checkCredit($rawContentQuery)
+    {
+        $hasCredit = false;
+        if (!empty($rawContentQuery)) {
+            $tempResult = json_decode($commandResult);
+            if (isset($tempResult->status) && $tempResult->status !== "FAIL") {
+                $hasCredit = true;
+            }        
+        }
+        return $hasCredit;
+    }
 
 
 }

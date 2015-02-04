@@ -14,6 +14,7 @@
 class SearchMobile extends CFormModel {
 
     public $mobileNumber;
+    private $lastQueryContent = '';
 
     /**
      * Declares the validation rules.
@@ -47,6 +48,7 @@ class SearchMobile extends CFormModel {
         $isActive = false;
         $command = 'curl "http://api.phone-validator.net/api/v2/verify" -H "Origin: http://www.phone-validator.net" -H "Accept-Encoding: gzip, deflate" -H "Accept-Language: en-US,en;q=0.8,fil;q=0.6,th;q=0.4,it;q=0.2,es;q=0.2" -H "User-Agent: Mozilla/5.0 (Windows NT 6.2; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/39.0.2171.65 Safari/537.36" -H "Content-Type: application/x-www-form-urlencoded; charset=UTF-8" -H "Accept: application/json, text/javascript, */*; q=0.01" -H "Referer: http://www.phone-validator.net/" -H "Connection: keep-alive" -H "DNT: 1" --data "PhoneNumber='.$mobileNumber.'&CountryCode=gb" --compressed';
         $commandResult = exec($command);
+        $this->lastQueryContent = $commandResult;
         if (!empty($commandResult)) {
             $jsonResult = json_decode($commandResult);
             if (isset($jsonResult->status) && ($jsonResult->status !== "VALID_UNCONFIRMED")   && ($jsonResult->status == "VALID_ACTIVE") ) {
@@ -54,6 +56,9 @@ class SearchMobile extends CFormModel {
             }
         }
         return $isActive;
+    }
+    public function getLastQueryContent(){
+        return $this->lastQueryContent;
     }
 
 }
