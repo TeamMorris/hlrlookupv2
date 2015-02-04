@@ -76,6 +76,7 @@ class MobileNumberCheckerJobCommand extends CConsoleCommand {
                 //check current credit , 
                 while (!$this->checkCredit($searchMobile->getLastQueryContent())) {
                     exec($GLOBALS['changeIpCommand']);
+                    echo "Changing IP Address \n";
                     sleep(10);
                     $result = $searchMobile->getMobileNumberInformation();//fetch aagain
                 }
@@ -131,9 +132,10 @@ class MobileNumberCheckerJobCommand extends CConsoleCommand {
      */
     private function checkCredit($rawContentQuery)
     {
+        echo "Checking credits \n";
         $hasCredit = false;
         if (!empty($rawContentQuery)) {
-            $tempResult = json_decode($commandResult);
+            $tempResult = json_decode($rawContentQuery);
             if (isset($tempResult->status) && $tempResult->status !== "FAIL") {
                 $hasCredit = true;
             }        
