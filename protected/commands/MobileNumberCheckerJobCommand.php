@@ -24,7 +24,7 @@ class MobileNumberCheckerJobCommand extends CConsoleCommand {
         echo "Preparing Mobile Number Queue. \n";
         //get one queue from the database
         $criteria = new CDbCriteria();
-        $criteria->compare("queue_status", "queued");
+        $criteria->addInCondition("queue_status",array("queued","requeued"));
         //update the status to on-going
         /**
          * @var $queue Queue
