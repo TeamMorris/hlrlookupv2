@@ -40,7 +40,7 @@ class MobileNumberCheckerJobCommand extends CConsoleCommand {
             }elseif ($queue->queue_status === 'requeued') {
                 $contentsCommand = Yii::app()->db->createCommand("select mobileNumber from mobilenumberrecord where queue_id = :queue_id and status IS NULL OR status = '' ");
                 $contentsCommand->params = array(
-                    "queue_id"=$queue->queue_id
+                    "queue_id"=>$queue->queue_id
                 );
                 $contentsArr = $contentsCommand->queryAll();
             }
