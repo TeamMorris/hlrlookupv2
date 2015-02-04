@@ -79,7 +79,7 @@ class MobileNumberCheckerJobCommand extends CConsoleCommand {
                     exec($GLOBALS['changeIpCommand']);
                     exec($GLOBALS['connectCommand']);
                     echo "Changing IP Address \n";
-                    sleep(10);
+                    sleep(30);
                     $result = $searchMobile->getMobileNumberInformation();//fetch aagain
                 }
                 
