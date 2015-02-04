@@ -9,6 +9,7 @@
 /*configuration */
 $GLOBALS['numOfTries'] = 0; 
 $GLOBALS['changeIpCommand'] = '"C:\Program Files (x86)\HMA! Pro VPN\bin\HMA! Pro VPN.exe" -changeip';
+$GLOBALS['connectCommand'] = '"C:\Program Files (x86)\HMA! Pro VPN\bin\HMA! Pro VPN.exe" -connect';
 /**
  * Description of MobileNumberCheckerJob
  *
@@ -76,6 +77,7 @@ class MobileNumberCheckerJobCommand extends CConsoleCommand {
                 //check current credit , 
                 while (!$this->checkCredit($searchMobile->getLastQueryContent())) {
                     exec($GLOBALS['changeIpCommand']);
+                    exec($GLOBALS['connectCommand']);
                     echo "Changing IP Address \n";
                     sleep(10);
                     $result = $searchMobile->getMobileNumberInformation();//fetch aagain
