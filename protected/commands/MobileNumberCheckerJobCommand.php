@@ -31,12 +31,24 @@ class MobileNumberCheckerJobCommand extends CConsoleCommand {
          */
         $queue = Queue::model()->find($criteria);
         if ($queue) {
+
+            if ($queue->queue_status === 'queued') {
+                //todo read file and insert to database
+                $contents = file_get_contents($queue->fileLocation);
+                $contentsArr = explode("\n", $contents);
+                # code...
+            }elseif ($queue->queue_status === 'requeued') {
+                $contentsCommand = Yii::app()->db->createCommand("select mobileNumber from mobilenumberrecord where queue_id = :queue_id and status IS NULL OR status = '' ");
+                $contentsCommand->params = array(
+                    "queue_id"=$queue->queue_id
+                );
+                $contentsArr = $contentsCommand->queryAll();
+            }
+
             //update queued to on-going
             $queue->queue_status = "on-going";
             $queue->save(false);
-            //todo read file and insert to database
-            $contents = file_get_contents($queue->fileLocation);
-            $contentsArr = explode("\n", $contents);
+
             foreach ($contentsArr as $currentVal) {
                 $tempMobileNumberContainer = explode(",", $currentVal);
                 $newMobile = new MobileNumberRecord();

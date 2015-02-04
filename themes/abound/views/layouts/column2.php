@@ -9,7 +9,7 @@
 			/*'type'=>'list',*/
 			'encodeLabel'=>false,
 			'items'=>array(
-				array('label'=>'<i class="icon icon-home"></i>  Dashboard <span class="label label-info pull-right">Back</span>', 'url'=>array('/site/index'),'itemOptions'=>array('class'=>'')),
+				array('label'=>'<i class="icon icon-home"></i>  Dashboard <span class="label label-info pull-right">Back</span>', 'url'=>array('/queue/index'),'itemOptions'=>array('class'=>'')),
 				// Include the operations menu
 				array('label'=>'OPERATIONS','items'=>$this->menu),
 			),
