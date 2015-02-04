@@ -31,42 +31,34 @@ class MobileNumberCheckerJobCommand extends CConsoleCommand {
          */
         $queue = Queue::model()->find($criteria);
         if ($queue) {
-
             if ($queue->queue_status === 'queued') {
                 //todo read file and insert to database
                 $contents = file_get_contents($queue->fileLocation);
                 $contentsArr = explode("\n", $contents);
-                # code...
-            }elseif ($queue->queue_status === 'requeued') {
-                $contentsCommand = Yii::app()->db->createCommand("select mobileNumber from mobilenumberrecord where queue_id = :queue_id and status IS NULL OR status = '' ");
-                $contentsCommand->params = array(
-                    "queue_id"=>$queue->queue_id
-                );
-                $contentsArr = $contentsCommand->queryAll();
-            }
-
-            //update queued to on-going
-            $queue->queue_status = "on-going";
-            $queue->save(false);
-
-            foreach ($contentsArr as $currentVal) {
-                $tempMobileNumberContainer = explode(",", $currentVal);
-                $newMobile = new MobileNumberRecord();
-                $newMobile->mobileNumber = $tempMobileNumberContainer[0];
-                $newMobile->queue_id = $queue->queue_id;
-                if ($newMobile->save()) {
-                    echo "New mobile number saved : $newMobile->mobileNumber \n";
-                } else {
-                    echo "New mobile number failed : $newMobile->mobileNumber :\n";
-                    $errors = $newMobile->getErrors();
-                    foreach($errors as $currentError){
-                        echo $currentError."\n";
+                //insert data
+                foreach ($contentsArr as $currentVal) {
+                    $tempMobileNumberContainer = explode(",", $currentVal);
+                    $newMobile = new MobileNumberRecord();
+                    $newMobile->mobileNumber = $tempMobileNumberContainer[0];
+                    $newMobile->queue_id = $queue->queue_id;
+                    if ($newMobile->save()) {
+                        echo "New mobile number saved : $newMobile->mobileNumber \n";
+                    } else {
+                        echo "New mobile number failed : $newMobile->mobileNumber :\n";
+                        $errors = $newMobile->getErrors();
+                        foreach($errors as $currentError){
+                            echo $currentError."\n";
+                        }
                     }
                 }
             }
+            //update queued to on-going
+            $queue->queue_status = "on-going";
+            $queue->save(false);
+            
             echo "Starting lookup job . \n";
             /*retrieve all mobile numbners under the queue*/
-            $mobileNumbersCommand = Yii::app()->db->createCommand("select mobileNumber from mobilenumberrecord where queue_id = :queue_id");
+            $mobileNumbersCommand = Yii::app()->db->createCommand("select mobileNumber from mobilenumberrecord where queue_id = :queue_id and status = 'idle'");
             $mobileNumbersCommand->params = array("queue_id" => $queue->queue_id );
             $mobileNumbersArrResult = $mobileNumbersCommand->queryAll();
             /*mobile info searcher */
