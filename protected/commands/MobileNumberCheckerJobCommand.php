@@ -41,7 +41,7 @@ class MobileNumberCheckerJobCommand extends CConsoleCommand {
                     $newMobile = new MobileNumberRecord();
                     $newMobile->mobileNumber = $tempMobileNumberContainer[0];
                     $newMobile->queue_id = $queue->queue_id;
-                    if ($newMobile->save()) {
+                    if ($newMobile->save(false)) {
                         echo "New mobile number saved : $newMobile->mobileNumber \n";
                     } else {
                         echo "New mobile number failed : $newMobile->mobileNumber :\n";
