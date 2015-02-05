@@ -31,7 +31,7 @@ class MobileNumberCheckerJobCommand extends CConsoleCommand {
          */
         $queue = Queue::model()->find($criteria);
         if ($queue) {
-            if ($queue->queue_status === 'queued') {
+            if ($queue->queue_status == 'queued') {
                 //todo read file and insert to database
                 $contents = file_get_contents($queue->fileLocation);
                 $contentsArr = explode("\n", $contents);
